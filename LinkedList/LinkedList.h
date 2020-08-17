@@ -1,13 +1,17 @@
 #pragma once
-
+#include <string>
+#include <optional>
+template<typename T>
 class Stack
 {
 
 private:
+	template<typename T>
 	class Element
 	{
+	
 	public:
-		Element(int val, Element* pLast)
+		Element(T val, Element* pLast)
 			:
 			val(val),
 			pLast(pLast)
@@ -23,7 +27,7 @@ private:
 		{
 			if (src.pLast != nullptr)
 			{
-				pLast = new Element(*src.pLast);
+				pLast = new Element<T>(*src.pLast);
 			}
 		}
 		Element& operator=(const Element& rhs) {
@@ -31,9 +35,9 @@ private:
 			val = rhs.val;
 
 		}
-		int GetVal() const
+		T GetVal() const
 		{
-			return val;
+			return (T)val;
 		}
 		Element* Disconnect()
 		{
@@ -55,35 +59,7 @@ private:
 				return 1;
 			}
 		}
-		int SumElements() {
-			int count = CountElements();
-			if ( count == 1){
-				return val;
-			}
-			else if (count > 1) {
-				return pLast->SumElements() + val;
-			}
-			else {
-				return 0;
-			}
-		}
 
-		int MultiplyElements() {
-			int count = CountElements();
-
-			if (count == 1) {
-				return val;
-			}
-			else if (count > 1) {
-				return pLast->MultiplyElements() * val;
-			}
-			else {
-				return 0;
-			}
-
-
-
-		}
 		~Element()
 		{
 			delete pLast;
@@ -91,16 +67,17 @@ private:
 
 		}
 
-		int val;
+		T val;
 		int index = 0;
-		Element* pLast = nullptr;
-		Element* pNext = nullptr;
+		Element<T>* pLast = nullptr;
+		Element<T>* pNext = nullptr;
 	};
 public:
+
 	class Iterator {
 	public:
 		Iterator() = default;
-		Iterator(Element* pElement) :
+		Iterator(Element<T>* pElement) :
 			pElement(pElement)
 		{}
 		bool operator !=(Iterator rhs) {
@@ -108,7 +85,7 @@ public:
 
 
 		}
-		int& operator *() {
+		T& operator *() {
 			return pElement->val;
 		}
 		Iterator operator --() {
@@ -119,38 +96,15 @@ public:
 			pElement = pElement->pNext;
 			return *this;
 		}
-		Element* GetElement() {
+		Element<T>* GetElement() {
 			return pElement;
 		}
 	private:
-		Element* pElement = nullptr;
+		Element<T>* pElement = nullptr;
 
 	};
 
-	class ConstIterator
-	{
-	public:
-		ConstIterator() = default;
-		ConstIterator(const Element* pElement)
-			:
-			pElement(pElement)
-		{}
-		ConstIterator& operator--()
-		{
-			pElement = pElement->pLast;
-			return *this;
-		}
-		const int& operator*() const
-		{
-			return pElement->val;
-		}
-		bool operator!=(ConstIterator rhs) const
-		{
-			return pElement != rhs.pElement;
-		}
-	private:
-		const Element* pElement = nullptr;
-	};
+
 	Stack() = default;
 	Stack(const Stack& src)
 	{
@@ -175,18 +129,24 @@ public:
 	}
 
 
-		int operator[](int index) {
+	T operator[](int index) {
 		Iterator it = Iterator(pTop);
 		int size = Size();
-		for (int i = 0; i < size; i++) {
-			if (it.GetElement()->index != index) {
-				--it;
-			}
-			else {
-				return it.GetElement()->GetVal();
-				break;
-			}
+
+		if (size == 0 || index > pTop->index || index > 0) {
+			std::cout << "INVALID INDEX";
 		}
+			for (int i = 0; i < size; i++) {
+
+				if (it.GetElement()->index != index) {
+					--it;
+				}
+				else {
+					return it.GetElement()->GetVal();
+					break;
+				}
+			}
+		
 	}
 
 
@@ -201,29 +161,20 @@ public:
 
 
 
-	void Push(int val)
+	void Push(T val)
 	{
 		if (pTop != nullptr) {
-			pTop->pNext = new Element(val, pTop);
+			pTop->pNext = new Element<T>(val, pTop);
 
 			pTop = pTop->pNext;
 		}
 		else {
-				pTop = new Element(val, pTop);
+				pTop = new Element<T>(val, pTop);
 			}
 
 	}
 
-	int Sum() {
-		return pTop->SumElements();
-	}
-
-	int MultiplyAll() {
-		return pTop->MultiplyElements();
-	}
-
-
-	int Pop()
+	T Pop()
 	{
 		if (!Empty())
 		{
@@ -261,7 +212,7 @@ public:
 		return pTop == nullptr;
 	}
 
-	int TopValue() {
+	T TopValue() {
 		return pTop->val;
 	}
 
@@ -285,9 +236,8 @@ public:
 
 
 private:
-	Element* pTop = nullptr;
+	Element<T>* pTop = nullptr;
 	
-
 
 
 };

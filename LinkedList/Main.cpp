@@ -3,18 +3,17 @@
 #include "LinkedList.h"
 int main()
 {
-    Stack stack;
-    stack.Push(1);
-    stack.Push(2);
-    stack.Push(3);
-    stack.Pop();
-    stack.Pop();
+	Stack<int> s;
+
+		s.Push(1);
+		s.Pop();
+		std::cout << s[1];
+	
 
 
-    for (auto it = stack.begin(); it != stack.end();++it) {
-        std::cout << it.GetElement()->GetVal();
-        
-    }
-    
+	
+	
+
+
 }
 
