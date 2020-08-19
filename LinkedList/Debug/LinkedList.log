@@ -1,4 +1,4 @@
 ﻿  Main.cpp
   The contents of <optional> are available only with C++17 or later.
-C:\Users\james\source\repos\LinkedList\LinkedList\LinkedList.h(150): warning C4715: 'Stack<int>::operator[]': not all control paths return a value
+C:\Users\james\source\repos\LinkedList\LinkedList\LinkedList.h(167): warning C4715: 'Stack<testClass>::operator[]': not all control paths return a value
   LinkedList.vcxproj -> C:\Users\james\source\repos\LinkedList\Debug\LinkedList.exe

@@ -9,15 +9,15 @@ private:
 	template<typename T>
 	class Element
 	{
-	
+
 	public:
 		Element(T val, Element* pLast)
 			:
 			val(val),
 			pLast(pLast)
-			
+
 		{
-			if( pLast != nullptr){
+			if (pLast != nullptr) {
 				index = pLast->index + 1;
 			}
 		}
@@ -43,8 +43,10 @@ private:
 		{
 			auto pTemp = pLast;
 			pLast = nullptr;
+			pNext = nullptr;
 			return pTemp;
 		}
+
 
 
 
@@ -64,6 +66,7 @@ private:
 		{
 			delete pLast;
 			pLast = nullptr;
+			pNext = nullptr;
 
 		}
 
@@ -96,6 +99,20 @@ public:
 			pElement = pElement->pNext;
 			return *this;
 		}
+		Iterator operator + (int rhs) {
+			for (int i = 0; i < rhs; i++) {
+				pElement = pElement->pNext;
+			}
+			return pElement;
+		}
+
+		Iterator operator - (int rhs) {
+			for (int i = 0; i < rhs; i++) {
+				pElement = pElement->pLast;
+			}
+
+		}
+
 		Element<T>* GetElement() {
 			return pElement;
 		}
@@ -136,17 +153,17 @@ public:
 		if (size == 0 || index > pTop->index || index > 0) {
 			std::cout << "INVALID INDEX";
 		}
-			for (int i = 0; i < size; i++) {
+		for (int i = 0; i < size; i++) {
 
-				if (it.GetElement()->index != index) {
-					--it;
-				}
-				else {
-					return it.GetElement()->GetVal();
-					break;
-				}
+			if (it.GetElement()->index != index) {
+				--it;
 			}
-		
+			else {
+				return it.GetElement()->GetVal();
+				break;
+			}
+		}
+
 	}
 
 
@@ -169,29 +186,50 @@ public:
 			pTop = pTop->pNext;
 		}
 		else {
-				pTop = new Element<T>(val, pTop);
-			}
+			pTop = new Element<T>(val, pTop);
+		}
 
 	}
+
 
 	T Pop()
 	{
 		if (!Empty())
 		{
-			const int tempVal = pTop->GetVal();
+			T tempVal = pTop->GetVal();
 			auto pOldTop = pTop;
 			pTop = pTop->Disconnect();
 			delete pOldTop;
-			if (pTop != nullptr){
+			if (pTop != nullptr) {
 				pTop->pNext = nullptr;
 			}
-			
+
 			return tempVal;
 		}
 		else
 		{
-			return -1;
+			return T();
 		}
+	}
+
+	void Erase(Iterator it) {
+
+
+		Element<T>* next = it.GetElement()->pNext;
+		Element<T>* last = it.GetElement()->pLast;
+		if (last != nullptr) {
+			last->Disconnect();
+
+			last->pNext = next;
+		}
+
+		if (next != nullptr){
+			next->pLast = last;
+	}
+
+
+		
+
 	}
 	int Size() const
 	{
@@ -218,7 +256,7 @@ public:
 
 	Iterator begin() {
 		if (pTop != nullptr) {
-			Element* ele = pTop;
+			Element<T>* ele = pTop;
 			while (ele->pLast != nullptr) {
 				ele = ele->pLast;
 			}
